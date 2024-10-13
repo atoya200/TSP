@@ -2,6 +2,7 @@ import tkinter
 import tkintermapview
 import math
 import csv
+import matplotlib.pyplot as plt
 from haversine import haversine, Unit 
 
 # Función para levantar los datos del archivo ciudades.txt
@@ -34,16 +35,7 @@ def calcularDistancias(ciudades):
             matriz_distancias[i][j] = distancia
             matriz_distancias[j][i] = distancia
 
-    for fila in matriz_distancias:
-        print(fila)
-
     return matriz_distancias
-
-# Levantar los datos de las ciudades
-datos = levantarArchivosDataSet()
-
-# Calcular la matriz de distancias entre las ciudades
-matriz_distancia = calcularDistancias(datos)
 
 # Algoritmo del viajante de comercio
 def tsp_dynamic_programming(distances, start_city):
@@ -88,6 +80,56 @@ def tsp_dynamic_programming(distances, start_city):
 
     return tour, min_cost
 
+# Levantar los datos de las ciudades
+datos = levantarArchivosDataSet()
+
+# Calcular la matriz de distancias entre las ciudades
+matriz_distancia = calcularDistancias(datos)
+
+# Definir la ciudad de inicio (puedes elegir cualquier ciudad, aquí elijo 0)
+start_city = 0
+
+# Obtener el tour más corto directamente usando tsp_dynamic_programming
+tour_corto, costo_corto = tsp_dynamic_programming(matriz_distancia, start_city)
+
+print("El mejor tour es:", tour_corto)
+print("El costo del mejor tour es:", costo_corto)
+
+# Visualizar el tour en el gráfico
+class Point(complex):
+    x = property(lambda p: p.real)
+    y = property(lambda p: p.imag)
+
+def Coordinate_map(ciudades, lat_scale=69, long_scale=-48):
+    """Genera un conjunto de ciudades a partir de una lista de tuplas que contienen nombre, latitud y longitud."""
+    return [Point(long_scale * ciudad[2], lat_scale * ciudad[1]) for ciudad in ciudades]  # Cambiamos a lista
+
+# Crear un conjunto de coordenadas a partir de los datos
+coordenadas = Coordinate_map(datos)
+
+# Obtener las coordenadas del tour corto
+tour_coords = [coordenadas[city] for city in tour_corto]
+
+# Añadir el punto de inicio al final para cerrar el tour
+tour_coords.append(tour_coords[0])
+
+# Función para trazar líneas entre puntos
+def plot_lines(points, style='bo-'):
+    "Plot lines to connect a series of points."
+    plt.plot([p.x for p in points], [p.y for p in points], style)
+    plt.axis('scaled'); plt.axis('off')
+
+# Visualizar el tour
+plot_lines(tour_coords, 'r-')  # 'r-' para una línea roja
+
+# Agregar los puntos de las ciudades
+plt.scatter([p.x for p in coordenadas], [p.y for p in coordenadas], color='blue', s=50, label='Ciudades')  # s=50 para el tamaño de los puntos
+
+plt.title("Tour más corto del TSP")
+plt.legend()
+plt.show()
+
+"""
 # Crear la ventana principal
 root_tk = tkinter.Tk()
 root_tk.geometry(f"{800}x{600}")
@@ -130,3 +172,4 @@ print("Costo óptimo:", min_cost, "Recorrido:", tour)
 
 # Iniciar el bucle de eventos
 root_tk.mainloop()
+"""
