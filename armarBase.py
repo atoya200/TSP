@@ -17,33 +17,29 @@ def levantarArchivosDataSet():
 datos = levantarArchivosDataSet()
 
 
-def calcularDistancias(start, datos):
-    distancias = []
+def calcularDistancias(ciudades):
+    # Inicializar una matriz cuadrada de tamaño n x n (donde n es la cantidad de ciudades)
+    n = len(ciudades)
+    matriz_distancias = [[0 for _ in range(n)] for _ in range(n)]
 
-    for i in range (0, len(datos)):
-        if(i == start):
-            distancias.append(0)
-            continue
-        
-        puntoInicial = datos[start]
-        puntoActal = datos[i]
+    # Calcular las distancias entre todas las combinaciones de ciudades
+    for i in range(n):
+        for j in range(i + 1, n):
+            puntoInicial = (float(ciudades[i][5]), float(ciudades[i][6]))
+            puntoActual = (float(ciudades[j][5]), float(ciudades[j][2]))
+            
+            # Calcular la distancia usando Haversine
+            distancia = haversine(puntoInicial, puntoActual, unit=Unit.KILOMETERS)
 
-        """x2 = float(puntoInicial[6])
-        x1 = float(puntoActal[6])
+            # Asignar la distancia en ambas posiciones de la matriz (simétrica)
+            matriz_distancias[i][j] = distancia
+            matriz_distancias[j][i] = distancia
 
-        y2 = float(puntoInicial[5])
-        y1 = float(puntoActal[5]) """
+    # Imprimir la matriz de distancias
+    for fila in matriz_distancias:
+        print(fila)
 
-        inicial = (float(puntoInicial[1]), float(puntoInicial[2])) 
-        actual = (float(puntoActal[1]), float(puntoActal[2])) 
-
-
-        # Convertir las latitudes y longitudes de grados a radianes
-        distancia = haversine(inicial, actual, unit=Unit.KILOMETERS)
-
-        distancias.append(distancia)
-
-    print(distancias)
+    return matriz_distancias
         
 
 cities = [
@@ -62,4 +58,5 @@ cities = [
     ["Salt Lake City", 40.7608, -111.8910],
 ]
 
-calcularDistancias(0, cities)
+calcularDistancias(datos)
+
