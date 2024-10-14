@@ -138,3 +138,4 @@ print("Costo óptimo:", min_cost, "Recorrido:", tour)
 # Iniciar el bucle de eventos
 root_tk.mainloop()
 
+
