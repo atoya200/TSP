@@ -43,9 +43,10 @@ datos = levantarArchivosDataSet()
 # Calcular la matriz de distancias entre las ciudades
 matriz_distancia = calcularDistancias(datos)
 
-# Definir la ciudad de inicio (puedes elegir cualquier ciudad, aquí elijo 0)
+#  ciudad de inicio
 start_city = 0
 
+print(matriz_distancia)
 
 def tsp_backtracking_memo(distances, start_city):
     n = len(distances)
@@ -131,10 +132,18 @@ def mostrar_rutas_secuencialmente(i):
         map_widget.set_path([(lat1, lon1), (lat2, lon2)], color="blue")
         root_tk.after(1000, mostrar_rutas_secuencialmente, i + 1)
 
+def mostrar_distancia_entre_ciudades(matriz_distancia, tour):
+    for i in range(len(tour) - 1):  # Itera hasta el penúltimo índice
+        ciudad_origen = tour[i]       # Ciudad en la posición i del tour
+        ciudad_destino = tour[i + 1]  # Ciudad en la posición i+1 del tour
+        distancia = matriz_distancia[ciudad_origen][ciudad_destino]  # Distancia en la matriz
+        print(f"Distancia entre {ciudad_origen} y {ciudad_destino}: {distancia}")
+
+
 # Iniciar la visualización secuencial
 root_tk.after(1000, mostrar_rutas_secuencialmente, 0)
 print("Costo óptimo:", min_cost, "Recorrido:", tour)
-
+# mostrar_distancia_entre_ciudades(matriz_distancia,tour)
 # Iniciar el bucle de eventos
 root_tk.mainloop()
 
