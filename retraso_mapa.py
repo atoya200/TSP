@@ -142,9 +142,10 @@ def mostrar_distancia_entre_ciudades(matriz_distancia, tour):
 
 # Iniciar la visualización secuencial
 root_tk.after(1000, mostrar_rutas_secuencialmente, 0)
-print("Costo óptimo:", min_cost, "Recorrido:", tour)
-# mostrar_distancia_entre_ciudades(matriz_distancia,tour)
+# ESTa funcion muestra las distancias entre cada par de ciudades
+mostrar_distancia_entre_ciudades(matriz_distancia,tour)
 # Iniciar el bucle de eventos
+print("Costo óptimo:", min_cost, "Recorrido:", tour)
 root_tk.mainloop()
 
 
