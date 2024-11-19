@@ -9,12 +9,7 @@ def levantarArchivosDataSet():
             datos = linea.split(",")
             linea = fichero.readline()
             ciudades.append([datos[0], datos[1], datos[2], datos[3], datos[4], datos[8], datos[9]])
-    for c in ciudades:
-        print(c)
     return ciudades
-
-
-datos = levantarArchivosDataSet()
 
 
 def calcularDistancias(ciudades):
@@ -26,7 +21,7 @@ def calcularDistancias(ciudades):
     for i in range(n):
         for j in range(i + 1, n):
             puntoInicial = (float(ciudades[i][5]), float(ciudades[i][6]))
-            puntoActual = (float(ciudades[j][5]), float(ciudades[j][2]))
+            puntoActual = (float(ciudades[j][5]), float(ciudades[j][6]))
             
             # Calcular la distancia usando Haversine
             distancia = haversine(puntoInicial, puntoActual, unit=Unit.KILOMETERS)
@@ -36,10 +31,16 @@ def calcularDistancias(ciudades):
             matriz_distancias[j][i] = distancia
 
     # Imprimir la matriz de distancias
-    for fila in matriz_distancias:
+        """     
+        for fila in matriz_distancias:
         print(fila)
-
+        """
     return matriz_distancias
+
+""" datos = levantarArchivosDataSet()
+
+
+
         
 
 cities = [
@@ -59,4 +60,4 @@ cities = [
 ]
 
 calcularDistancias(datos)
-
+ """
