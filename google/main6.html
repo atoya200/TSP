@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa TSP con Animación</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Título del Modal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Contenido del modal aquí.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        const API_KEY = "5b3ce3597851110001cf6248eeb850562bc34d329aca00efb8694718";
+
+        const waypoints = [
+            [-30.4, -56.46667],
+            [-30.9056, -55.55012],
+            [-31.73333, -55.98333],
+            [-32.37028, -54.1675],
+            [-33.23333, -54.38333],
+            [-34.48333, -54.33333],
+            [-34.9, -54.95],
+            [-34.37589, -55.23771],
+            [-34.852, -56.183],
+            [-34.52278, -56.27778],
+            [-34.09556, -56.21417],
+            [-33.38056, -56.52361],
+            [-33.5165, -56.89957],
+            [-34.3375, -56.71361],
+            [-34.46262, -57.83976],
+            [-33.25203, -58.03093],
+            [-33.13278, -58.295],
+            [-32.32139, -58.07556],
+            [-31.38333, -57.96667],
+            [-30.4, -56.46667]
+
+        ];
+
+        //const nombres = ["Ciudad 1", "Ciudad 2", "Ciudad 3", "Ciudad 4", "Ciudad 5", "Ciudad 6", "Ciudad 7"];
+        let ciudad = "Rivera"
+        const nombres = [`<div>Artigas <button onclick='lanzarModal("${ciudad}"")'>Ver más</button> </div>`, "Ciudad 2", "Ciudad 3", "Ciudad 4", "Ciudad 5", "Ciudad 6", "Ciudad 7"];
+
+
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            const map = L.map('map').setView(waypoints[0], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Añadir marcador inicial
+            L.marker(waypoints[0], {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    // html: `<div style="color: blue; font-size: 16px;">1</div>`
+                    html: 1
+                })
+                //}).bindPopup(nombres[0]).addTo(map);
+            }).addTo(map);
+
+            for (let i = 1; i < waypoints.length; i++) {
+                const ruta = await obtenerRuta(waypoints[i - 1], waypoints[i]);
+                if (ruta.length > 0) {
+                    // Animar y dibujar la línea
+                    await animarLinea(map, ruta);
+
+                    // Añadir marcador numerado
+                    L.marker(waypoints[i], {
+                        icon: L.divIcon({
+                            //className: 'marker-icon',
+                            className: 'marker-icon',
+                            html: `<div style="color: green; font-size: 16px;" onclick='lanzarModal("Rivera")'>${i + 1}</div>`
+                        })
+                        //}).bindPopup(nombres[i]).addTo(map);
+                    }).addTo(map);
+                }
+                await delay(1500); // Pausa entre rutas
+            }
+        });
+
+        // Función para obtener ruta entre dos puntos
+        async function obtenerRuta(origen, destino) {
+            const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${API_KEY}&start=${origen[1]},${origen[0]}&end=${destino[1]},${destino[0]}`;
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                return data.features[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+            } else {
+                console.error("Error al obtener la ruta:", response.status);
+                return [];
+            }
+        }
+
+        // Función para animar una línea en el mapa
+        function animarLinea(map, coordinates) {
+            return new Promise(resolve => {
+                const polyline = L.polyline([], { color: 'red', weight: 5 }).addTo(map);
+                let i = 0;
+
+                function dibujarSegmento() {
+                    if (i < coordinates.length) {
+                        polyline.addLatLng(L.latLng(coordinates[i]));
+                        i++;
+                        setTimeout(dibujarSegmento, 2); // Velocidad de la animación
+                    } else {
+                        resolve(); // Finalizar la animación
+                    }
+                }
+                dibujarSegmento();
+            });
+        }
+
+        // Función para pausar ejecución
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+
+    <!-- Bootstrap Bundle JS (incluye Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+        /*  $(document).ready(function () {
+             // Lanzar el modal al hacer clic en el botón
+             $('#openModal').click(function () {
+                 $('#myModal').modal('show');
+             });
+         }); */
+
+        let imgsCiudades = {
+            "Rivera": ["a", "a", "a"]
+        }
+
+        let textoCiudades = {
+            "Rivera": ["Titulo", "Texto largo para aplicarle"]
+        }
+
+        function lanzarModal(opcion) {
+            if (!(opcion in imgsCiudades)) {
+                alert("Opción elegida invalida");
+                return
+            }
+
+            $('#myModal').modal('show');
+        }
+    </script>
+</body>
+
+</html>

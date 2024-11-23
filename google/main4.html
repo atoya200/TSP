@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa TSP con Animación</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+
+<body>
+    <div id="map" style="width: 100%; height: 100vh;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        const API_KEY = "5b3ce3597851110001cf6248eeb850562bc34d329aca00efb8694718";
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            // Inicializa el mapa centrado en una ubicación inicial
+            const map = L.map('map').setView([-32.37085, -57.85371], 7);
+
+            // Agrega el tile layer de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Lista de waypoints en el orden óptimo del TSP
+            const waypoints = [
+                [-30.4, -56.46667],
+                [-30.9056, -55.55012],
+                [-31.73333, -55.98333],
+                [-32.37028, -54.1675],
+                [-33.23333, -54.38333],
+                [-34.48333, -54.33333],
+                [-34.9, -54.95],
+                [-34.37589, -55.23771],
+                [-34.852, -56.183],
+                [-34.52278, -56.27778],
+                [-34.3375, -56.71361],
+                [-34.09556, -56.21417],
+                [-33.38056, -56.52361],
+                [-33.5165, -56.89957],
+                [-34.46262, -57.83976],
+                [-33.25203, -58.03093],
+                [-33.13278, -58.295],
+                [-32.32139, -58.07556],
+                [-31.38333, -57.96667],
+                [-30.4, -56.46667]
+            ];
+
+            // Obtener las rutas reales utilizando OpenRouteService
+            async function getRoute(apiKey, waypoints) {
+                const coordinates = waypoints.map(([lat, lng]) => `${lng},${lat}`).join('|');
+                const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&coordinates=${coordinates}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                return data.features[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+            }
+
+            // Obtiene la ruta completa
+            const fullRoute = await getRoute(API_KEY, waypoints);
+
+            // Dibuja la ruta en el mapa
+            L.polyline(fullRoute, { color: 'blue' }).addTo(map);
+
+            // Personaliza el ícono del bondi
+            const busIcon = L.icon({
+                iconUrl: 'bus.png', // Ícono de bondi
+                iconSize: [40, 40], // Tamaño del ícono
+                iconAnchor: [20, 40] // Centro del ícono
+            });
+
+            // Marcador para el bondi que se moverá a través de la ruta
+            const travelerMarker = L.marker(fullRoute[0], { icon: busIcon }).addTo(map);
+
+            // Función para mover el marcador con una animación suave entre los puntos
+            function moveMarker(marker, route, duration, callback) {
+                let index = 0;
+                const steps = 100; // Cantidad de pasos por segmento
+                const stepDuration = duration / steps;
+                let step = 0;
+
+                const interval = setInterval(() => {
+                    step++;
+                    if (step > steps) {
+                        step = 0;
+                        index++;
+                        if (index >= route.length - 1) {
+                            clearInterval(interval);
+                            if (callback) callback();
+                            return;
+                        }
+                    }
+
+                    // Interpolación entre puntos
+                    const start = L.latLng(route[index]);
+                    const end = L.latLng(route[index + 1]);
+                    const lat = start.lat + (end.lat - start.lat) * (step / steps);
+                    const lng = start.lng + (end.lng - start.lng) * (step / steps);
+                    marker.setLatLng([lat, lng]);
+                }, stepDuration);
+            }
+
+            // Inicia la animación de la ruta
+            moveMarker(travelerMarker, fullRoute, 10000, () => {
+                console.log("Ruta completada");
+            });
+        });
+    </script>
+</body>
+
+</html>

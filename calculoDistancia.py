@@ -7,6 +7,7 @@ from armarBase import levantarArchivosDataSet
 ORS_API_KEY = "5b3ce3597851110001cf6248eeb850562bc34d329aca00efb8694718"
 
 def obtener_matriz_distancias_y_tiempos(puntos):
+    print(puntos)
     url = "https://api.openrouteservice.org/v2/matrix/driving-car"
     headers = {
         "Authorization": ORS_API_KEY,
@@ -16,7 +17,6 @@ def obtener_matriz_distancias_y_tiempos(puntos):
         "locations": puntos,  # Lista de puntos
         "metrics": ["distance"],  # Obtener distancias y tiempos
         "units": "km",  # Resultados en kilómetros
-        "radius": 500
     }
 
     try:

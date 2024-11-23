@@ -1,5 +1,6 @@
 from armarBase import levantarArchivosDataSet, calcularDistancias
 from trazarEnMapa import trazaMapa
+from calculoDistancia import obtener_matriz_distancias_y_tiempos
 import math
 
 
@@ -53,19 +54,23 @@ def tsp_dynamic_programming(distances, start_city):
 
 datos = levantarArchivosDataSet()
 puntos = []
+puntos_de_bien = []
 nombresCiudades = []
 
 for ciudad in datos:
-    puntos.append([float(ciudad[5]), float(ciudad[6])])
+    puntos_de_bien.append([float(ciudad[5]), float(ciudad[6])])
+    puntos.append([float(ciudad[6]), float(ciudad[5])])
     nombreCiudad = ciudad[1].replace("\"", "")
     nombresCiudades.append(nombreCiudad)
 
-dist = calcularDistancias(datos)
+#dist = calcularDistancias(datos)
+dist = obtener_matriz_distancias_y_tiempos(puntos)
+print(dist)
 
 # Prueba iniciando desde la ciudad 0
 tour, min_cost = tsp_dynamic_programming(dist, 0)
 print(tour)
 for i in tour: 
-    print(puntos[i])
-trazaMapa(tour, puntos, 0, nombresCiudades, "mapaTest3")
+    print(puntos_de_bien[i], ",")
+trazaMapa(tour, puntos_de_bien, 0, nombresCiudades, "mapaTest4")
 
