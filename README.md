@@ -1,9 +1,11 @@
-Para la construcción de la imagen de docker, primero deben correr el siguiente comando
+Para poder usar la aplicación, primero debe tener la aplicación de docker abierta
 
+Luego debe ejeuctar el siguiente comando en una terminal CMD estando parado en la raíz del 
+proyecto
 docker-compose up --build
 
-Luego debe ingresar en un navegador 
+Hecho lo anterior, ahora vaya a un navegador e ingrese la siguiente URL
 http://localhost:8080/
 
-y ya estaría visualizando la aplicación para usarla
+Una  vez hecho lo anterior, ya estaría visualizando la aplicación para usarla
 
