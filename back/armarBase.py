@@ -2,7 +2,7 @@ ciudades_data_set = []
 
 def levantar_archivos_ciudades_data_set():
     ciudades = []
-    with open('back/ciudades.txt', 'r',  encoding='utf-8') as fichero:
+    with open('ciudades.txt', 'r',  encoding='utf-8') as fichero:
         linea = fichero.readline()
         linea = fichero.readline()
         while linea != '':

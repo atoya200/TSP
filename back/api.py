@@ -73,4 +73,5 @@ if __name__ == '__main__':
     # Inicializar datos
     levantar_archivos_ciudades_data_set()
     # Iniciar el servidor
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
+
