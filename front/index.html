@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turismo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loader.css">
+    <link rel="stylesheet" href="select.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <link rel="shortcut icon" href="imgs/mapa.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Loader -->
+
+    <!--     <div class="loader no-visible" id="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div> -->
+
+    <div class="overlay no-visible" id="loader-overlay">
+        <p class="loading-text">
+            Cargando<span class="dots"></span>
+        </p>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade modal-lg" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Estas viendo <span id="nombre-ciudad"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body-content">
+                    <div class="image-grid"></div>
+                    <div class="text-content"></div>
+
+                </div>
+                <div class="modal-footer">
+                    <!--  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+               -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="container">
+
+
+        <!-- Donde estará alojado el mapa -->
+        <div id="map"></div>
+
+        <div id="opciones">
+            <div id="container-punto-inicial">
+
+                <h3>Elija su recorrido</h3>
+                <div id="opciones-punto-inicial">
+                    <p>Seleccione la ciudad de origen</p>
+                    <div class="custom-select">
+
+                        <select name="" id="select-ciudades" onchange="mostrarOpciones()">
+                            <option id="option-inicial" value="">Seleccionar</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="opciones-destinos" class="no-visible">
+                <!-- <button id="collapse-btn" onclick="mostrarDestinos()" class="collapse-btn btn btn-dark btn-personalizado">
+                    Mostrar destinos
+                </button> -->
+                <div id="indicacion-destinos">
+                    <p>Seleccione al menos un destino</p>
+                </div>
+                <div id="destinos-posibles" class="no-visible">
+
+                </div>
+
+                <div id="btns-opciones">
+                    <button type="button" onclick="pedirRecorrido()" id="aceptar"
+                        class="btn btn-success btn-personalizado">
+                        Aceptar
+                    </button>
+
+                    <button type="button" onclick="limpiarMapa()" id="reiniciar"
+                        class="btn btn-danger btn-personalizado">
+                        <img src="./imgs/limpiador.png" alt="">
+                    </button>
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="config.js"></script>
+    <script src="datos.js"></script>
+    <script src="loader.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

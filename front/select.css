@@ -1,0 +1,38 @@
+.custom-select {
+    position: relative;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.custom-select select {
+    width: 90%;
+    padding: 8px 40px 8px 12px; /* Espacio interno, con margen derecho para la flecha */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: DodgerBlue;
+    color: #fff;
+    appearance: none; /* Elimina los estilos predeterminados del navegador */
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer; 
+}
+
+.custom-select select:focus {
+    outline: none;
+    border-color: #0078d7;
+    
+}
+
+.custom-select::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-30%) translateX(-100%);
+    width: 10px;
+    height: 10px;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+    pointer-events: none; /* Hace clic solo en el select, no en la flecha */
+}
